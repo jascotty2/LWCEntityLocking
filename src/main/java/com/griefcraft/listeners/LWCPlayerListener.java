@@ -118,10 +118,8 @@ public class LWCPlayerListener implements Listener {
 						event.isCancelled())) {
 					event.setCancelled(true);
 				}
-			} else {
-				return;
 			}
-			if (protection != null) {
+			if (!event.isCancelled() && protection != null) {
 				boolean canAccess = lwc.canAccessProtection(p, protection);
 				if (canAccess) {
 					protection.remove();
@@ -190,6 +188,7 @@ public class LWCPlayerListener implements Listener {
 
 	@EventHandler
 	public void onEntityDamage(EntityDamageEvent e) {
+		if(e instanceof EntityDamageByEntityEvent) return; // handle this separately
 		Entity entity = e.getEntity();
 		int A = 50000 + entity.getUniqueId().hashCode();
 
@@ -204,6 +203,7 @@ public class LWCPlayerListener implements Listener {
 
 	@EventHandler
 	public void itemFrameItemRemoval(EntityDamageByEntityEvent e) {
+		if(e.isCancelled()) return; // don't need to check if needs canceling if already canceled
 		Entity entity = e.getEntity();
 		int A = 50000 + entity.getUniqueId().hashCode();
 		LWC lwc = LWC.getInstance();
@@ -234,19 +234,13 @@ public class LWCPlayerListener implements Listener {
 				}
 			}
 			if (entity instanceof ItemFrame) {
-				if (protection != null) {
-					boolean canAccess = lwc.canAccessProtection(p, protection);
-					if (canAccess)
-						return;
+				if (protection != null && !lwc.canAccessProtection(p, protection)) {
 					e.setCancelled(true);
 				}
 				return;
 			}
 			if (entity instanceof Painting) {
-				if (protection != null) {
-					boolean canAccess = lwc.canAccessProtection(p, protection);
-					if (canAccess)
-						return;
+				if (protection != null && !lwc.canAccessProtection(p, protection)){
 					e.setCancelled(true);
 				}
 				return;
