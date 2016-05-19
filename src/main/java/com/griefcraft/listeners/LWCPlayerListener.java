@@ -188,7 +188,8 @@ public class LWCPlayerListener implements Listener {
 
 	@EventHandler
 	public void onEntityDamage(EntityDamageEvent e) {
-		if(e instanceof EntityDamageByEntityEvent) return; // handle this separately
+		if(e instanceof EntityDamageByEntityEvent
+			&& !(e.getCause() == DamageCause.BLOCK_EXPLOSION || e.getCause() == DamageCause.ENTITY_EXPLOSION)) return; // handle this separately
 		Entity entity = e.getEntity();
 		int A = 50000 + entity.getUniqueId().hashCode();
 
@@ -467,8 +468,8 @@ public class LWCPlayerListener implements Listener {
 	public void onMoveItem(InventoryMoveItemEvent event) {
 		boolean result;
 
-		// if the initiator is the same as the source it is a dropper i.e.
-		// depositing items
+		// if the initiator is the same as the source it is a dropper or hopper
+		// i.e. depositing items
 		if (event.getInitiator() == event.getSource()) {
 			result = handleMoveItemEvent(event.getInitiator(),
 					event.getDestination());
